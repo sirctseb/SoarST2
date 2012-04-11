@@ -1,0 +1,67 @@
+{ "name": "Soar (Raw)",
+  "scopeName": "source.soar",
+  "fileTypes": ["soar"],
+  "repository": {
+    "variable": {
+      "match": "<[^>]+>",
+      "name": "variable.parameter.soar",
+      "comment": "Variables in soar conditions or actions"
+    },
+    "attribute": {
+      "match": "\\^([A-z][A-z0-9-]*)",
+      "captures": {
+        "1": { "name": "constant.character.soar" }
+      },
+      "comment": "Attributes in soar"
+    },
+    "numeric-constant": {
+      "match": "\\d+",
+      "name": "constant.numeric.soar"
+    },
+    "other-constant": {
+      "match": "[A-z][A-z0-9-]*",
+      "name": "string.unquoted.soar"
+    }
+  },
+  "patterns": [
+    {"include": "#variable"},
+    {
+      "match": "#.*$",
+      "name": "comment.line.number-sign",
+      "comment": "Soar comments"
+    },
+    {
+      "name": "production",
+      "begin": "\\s*(sp)\\s*({)\\s*([A-z0-9-]+)",
+      "beginCaptures": {
+        "1": {"name": "keyword.control.soar"},
+        "3": {"name": "string.unquoted.soar"}
+      },
+      "end": "}",
+      "patterns": [
+        {
+          "match": "-->",
+          "name": "keyword.control.soar",
+          "comment": "The arrow between the conditions and actions"
+        },
+        {"include": "#variable"},
+        {"include": "#attribute"},
+        {
+          "name": "condition",
+          "begin": "\\((state)",
+          "beginCaptures": {
+            "1": {"name": "keyword.control.soar"}
+          },
+          "end": "\\)",
+          "patterns": [
+            {"include": "#variable"},
+            {"include": "#attribute"},
+            {"include": "#numeric-constant"},
+            {"include": "#other-constant"}
+          ]
+        }
+      ]
+    }
+  ],
+  "uuid": "f29b7345-7106-459d-adfe-d5972b251d8b"
+}
