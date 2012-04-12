@@ -38,8 +38,14 @@
     },
     "comment": {
       "match": "#.*$",
-      "name": "comment.line.number-sign",
+      "name": "comment.line.number-sign.soar",
       "comment": "Soar comments"
+    },
+    "flag": {
+      "match": ":(o-support|i-support|chunk|default)",
+      "captures": {
+        "1": { "name": "keyword.operator.soar"}
+      }
     }
   },
   "patterns": [
@@ -56,6 +62,7 @@
       "patterns": [
         {"include": "#comment"},
         {"include": "#documentation"},
+        {"include": "#flag"},
         {
           "match": "-->",
           "name": "keyword.control.soar",
