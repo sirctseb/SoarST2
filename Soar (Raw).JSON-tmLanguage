@@ -1,6 +1,8 @@
 { "name": "Soar (Raw)",
   "scopeName": "source.soar",
   "fileTypes": ["soar"],
+  "foldingStartMarker": "\\s*sp\\s*{",
+  "foldingStopMarker": "\\s*}",
   "repository": {
     "variable": {
       "match": "<[^>]+>",
@@ -12,7 +14,14 @@
       "captures": {
         "1": { "name": "constant.character.soar" }
       },
-      "comment": "Attributes in soar"
+      "comment": "Attributes in soar: TODO only last continuation gets colored"
+    },
+    "attribute-continue": {
+      "match": "\\.([A-z][A-z0-9-]*)",
+      "captures": {
+        "1": { "name": "constant.character.soar" }
+      },
+      "comment": "shortcut for soar attributes: TODO how to require that it comes after 'attribute'?"
     },
     "numeric-constant": {
       "match": "\\d+",
@@ -21,15 +30,21 @@
     "other-constant": {
       "match": "[A-z][A-z0-9-]*",
       "name": "string.unquoted.soar"
+    },
+    "documentation": {
+      "match": "\\[[^\\]]*\\]",
+      "name": "comment.line.soar",
+      "comment": "Production documentation string. TODO don't know what else to name it"
+    },
+    "comment": {
+      "match": "#.*$",
+      "name": "comment.line.number-sign",
+      "comment": "Soar comments"
     }
   },
   "patterns": [
     {"include": "#variable"},
-    {
-      "match": "#.*$",
-      "name": "comment.line.number-sign",
-      "comment": "Soar comments"
-    },
+    {"include": "#comment"},
     {
       "name": "production",
       "begin": "\\s*(sp)\\s*({)\\s*([A-z0-9-]+)",
@@ -39,6 +54,8 @@
       },
       "end": "}",
       "patterns": [
+        {"include": "#comment"},
+        {"include": "#documentation"},
         {
           "match": "-->",
           "name": "keyword.control.soar",
@@ -47,8 +64,8 @@
         {"include": "#variable"},
         {"include": "#attribute"},
         {
-          "name": "condition",
-          "begin": "\\((state)",
+          "name": "clause",
+          "begin": "\\(",
           "beginCaptures": {
             "1": {"name": "keyword.control.soar"}
           },
@@ -56,6 +73,7 @@
           "patterns": [
             {"include": "#variable"},
             {"include": "#attribute"},
+            {"include": "#attribute-continue"},
             {"include": "#numeric-constant"},
             {"include": "#other-constant"}
           ]
